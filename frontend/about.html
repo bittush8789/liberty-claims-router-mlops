@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About & MLOps Platform Metrics</title>
+  <!-- Google Fonts: Outfit -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <header class="glass">
+    <div class="logo">
+      <div class="logo-icon"><i class="fa-solid fa-droplet"></i></div>
+      <div>
+        <h1 style="font-size: 1.25rem; font-weight: 700; tracking-tight: -0.02em;">DiaPredict <span class="gradient-text">MLOps</span></h1>
+        <p style="font-size: 0.7rem; color: var(--text-secondary);">End-to-End Diagnostic Platform</p>
+      </div>
+    </div>
+    <nav class="nav-links">
+      <a href="index.html">Predictor</a>
+      <a href="about.html" class="active">About & Metrics</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;">
+      <!-- Stats Cards -->
+      <div class="glass" style="padding: 2.5rem;">
+        <h2 style="font-size: 1.75rem; margin-bottom: 0.5rem; font-weight: 700;">Platform Pipeline Performance</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem; font-size: 0.95rem;">Model statistics registered in training registry. Best candidate selected from Logistic Regression, Random Forest, and XGBoost.</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+          <div class="glass" style="padding: 1.5rem; background: rgba(59, 130, 246, 0.05); text-align: center;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary);">Pipeline Accuracy</span>
+            <h3 style="font-size: 2.5rem; font-weight: 800; margin-top: 0.5rem; color: #fff;">98.75%</h3>
+          </div>
+          <div class="glass" style="padding: 1.5rem; background: rgba(16, 185, 129, 0.05); text-align: center;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary);">Precision</span>
+            <h3 style="font-size: 2.5rem; font-weight: 800; margin-top: 0.5rem; color: #fff;">98.74%</h3>
+          </div>
+          <div class="glass" style="padding: 1.5rem; background: rgba(245, 158, 11, 0.05); text-align: center;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary);">F1 Score</span>
+            <h3 style="font-size: 2.5rem; font-weight: 800; margin-top: 0.5rem; color: #fff;">99.37%</h3>
+          </div>
+          <div class="glass" style="padding: 1.5rem; background: rgba(239, 68, 68, 0.05); text-align: center;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-secondary);">ROC AUC</span>
+            <h3 style="font-size: 2.5rem; font-weight: 800; margin-top: 0.5rem; color: #fff;">98.73%</h3>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tech Stack Details -->
+      <div class="glass" style="padding: 2.5rem;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem; font-weight: 700;">Infrastructure Stack</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; font-size: 0.9rem; line-height: 1.6;">
+          <div style="padding: 1rem; border-left: 3px solid var(--color-primary);">
+            <h4 style="font-weight: 600; margin-bottom: 0.5rem;">Storage & Tracking</h4>
+            <p style="color: var(--text-secondary);">Model and preprocessor binaries versioned using DVC and pushed to AWS S3. Experiments are registered and traced locally via MLflow.</p>
+          </div>
+          <div style="padding: 1rem; border-left: 3px solid var(--color-success);">
+            <h4 style="font-weight: 600; margin-bottom: 0.5rem;">Orchestration & Deploy</h4>
+            <p style="color: var(--text-secondary);">Dockerized container images managed via Kubernetes and KServe inferenceservice instances. ArgoCD automatically deploys updates.</p>
+          </div>
+          <div style="padding: 1rem; border-left: 3px solid #d946ef;">
+            <h4 style="font-weight: 600; margin-bottom: 0.5rem;">Monitoring</h4>
+            <p style="color: var(--text-secondary);">FastAPI metrics endpoint provides Prometheus format metrics reporting prediction counters, errors, and latencies visualized on Grafana.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

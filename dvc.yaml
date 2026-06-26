@@ -1,0 +1,42 @@
+stages:
+  ingestion:
+    cmd: python src/components/data_ingestion.py
+    deps:
+      - src/components/data_ingestion.py
+    params:
+      - ingestion.test_size
+      - ingestion.random_state
+    outs:
+      - artifacts/raw.csv
+      - artifacts/train.csv
+      - artifacts/test.csv
+
+  validation:
+    cmd: python src/components/data_validation.py
+    deps:
+      - src/components/data_validation.py
+      - artifacts/raw.csv
+    outs:
+      - validation_report.yaml
+
+  transformation:
+    cmd: python -c "from components.data_transformation import DataTransformation; t = DataTransformation(); t.initiate_data_transformation('artifacts/train.csv', 'artifacts/test.csv')"
+    deps:
+      - src/components/data_transformation.py
+      - artifacts/train.csv
+      - artifacts/test.csv
+    outs:
+      - artifacts/preprocessor.pkl
+
+  training:
+    cmd: python train.py
+    deps:
+      - train.py
+      - src/components/model_trainer.py
+      - artifacts/preprocessor.pkl
+    params:
+      - trainer.n_estimators
+      - trainer.random_state
+    outs:
+      - models/diabetes_model.pkl
+      - metrics.json

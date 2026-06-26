@@ -1,0 +1,20 @@
+[ 2026-06-26 21:06:48,037 ] 8 root - INFO - Triggering training pipeline from train.py
+[ 2026-06-26 21:06:48,038 ] 15 root - INFO - Starting training pipeline execution flow
+[ 2026-06-26 21:06:48,038 ] 21 root - INFO - Entered the data ingestion component
+[ 2026-06-26 21:06:48,060 ] 60 root - INFO - Generated synthetic Pima Indians Diabetes dataset successfully.
+[ 2026-06-26 21:06:48,078 ] 65 root - INFO - Split started
+[ 2026-06-26 21:06:48,111 ] 71 root - INFO - Ingestion of data completed successfully
+[ 2026-06-26 21:06:48,112 ] 20 root - INFO - Initiating data validation checks
+[ 2026-06-26 21:06:48,149 ] 65 root - INFO - Data validation report written to validation_report.yaml
+[ 2026-06-26 21:06:48,150 ] 26 root - INFO - Initiated data transformation component
+[ 2026-06-26 21:06:48,185 ] 31 root - INFO - Splitting inputs and targets
+[ 2026-06-26 21:06:48,187 ] 40 root - INFO - Applying preprocessor standard scaler object
+[ 2026-06-26 21:06:48,195 ] 52 root - INFO - Data preprocessor saved successfully
+[ 2026-06-26 21:06:48,195 ] 25 root - INFO - Initiating model training step
+[ 2026-06-26 21:06:48,195 ] 28 root - INFO - Training and evaluating model: Logistic Regression
+[ 2026-06-26 21:06:48,240 ] 28 root - INFO - Training and evaluating model: Random Forest
+[ 2026-06-26 21:06:48,404 ] 28 root - INFO - Training and evaluating model: XGBoost
+[ 2026-06-26 21:06:48,467 ] 57 root - INFO - Best model selected: Logistic Regression with Accuracy: 0.9875
+[ 2026-06-26 21:06:48,469 ] 14 root - INFO - Saving evaluation metrics to JSON file
+[ 2026-06-26 21:06:48,470 ] 28 root - INFO - Evaluation metrics written to metrics.json
+[ 2026-06-26 21:06:48,470 ] 37 root - INFO - Training pipeline execution flow completed successfully

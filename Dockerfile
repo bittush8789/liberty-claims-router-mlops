@@ -5,20 +5,21 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
-    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements & install python packages
+# Copy requirements and install packages
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source code and application files
+# Copy source code, preprocessors, models and UI
 COPY src/ ./src
-COPY api/ ./api
-COPY frontend/ ./frontend
+COPY artifacts/ ./artifacts
 COPY models/ ./models
+COPY frontend/ ./frontend
+COPY app.py .
+COPY train.py .
 
 EXPOSE 8000
 
-# Run FastAPI app
-CMD ["uvicorn", "api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start server
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]

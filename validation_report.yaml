@@ -1,0 +1,39 @@
+data_types:
+  Age: int64
+  BMI: float64
+  BloodPressure: int64
+  DiabetesPedigreeFunction: float64
+  Glucose: int64
+  Insulin: int64
+  Outcome: int64
+  Pregnancies: int64
+  SkinThickness: int64
+dataset_path: artifacts/raw.csv
+duplicates:
+  duplicate_count: 0
+missing_values:
+  details:
+    Age: 0
+    BMI: 0
+    BloodPressure: 0
+    DiabetesPedigreeFunction: 0
+    Glucose: 0
+    Insulin: 0
+    Outcome: 0
+    Pregnancies: 0
+    SkinThickness: 0
+  has_missing: false
+overall_status: Passed
+schema_validation:
+  expected_columns:
+  - Pregnancies
+  - Glucose
+  - BloodPressure
+  - SkinThickness
+  - Insulin
+  - BMI
+  - DiabetesPedigreeFunction
+  - Age
+  - Outcome
+  mismatched_columns: []
+  valid: true
