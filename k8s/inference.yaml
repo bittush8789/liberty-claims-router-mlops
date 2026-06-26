@@ -1,24 +1,10 @@
-apiVersion: "serving.kserve.io/v1beta1"
-kind: "InferenceService"
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
 metadata:
-  name: "diabetes-predictor"
-  namespace: "diabetes-mlops"
+  name: diabetes-predictor
+  namespace: diabetes-model
 spec:
   predictor:
-    serviceAccountName: s3-sa
-    containers:
-      - name: diabetes-container
-        image: bittush8789/diabetes-app:latest
-        ports:
-          - containerPort: 8000
-            protocol: TCP
-        env:
-          - name: DATABASE_URL
-            value: "sqlite:///./diabetes.db"
-        resources:
-          limits:
-            cpu: "1"
-            memory: 2Gi
-          requests:
-            cpu: "500m"
-            memory: 1Gi
+    serviceAccountName: sa-s3-access
+    sklearn:
+      storageUri: s3://diabetes-model-bucket/models/
