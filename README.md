@@ -11,6 +11,15 @@ An enterprise-grade, production-ready **First Notice of Loss (FNOL) Intelligent 
 
 ---
 
+## 💼 Business Use Cases Solved
+
+- **Automated Claims Classification**: Eliminates human indexing errors by instantly identifying the type of claim (Auto, Property, Liability, or Workers Comp) from raw customer-submitted descriptions.
+- **Dynamic SLA Prioritization**: Automatically flags critical/high-severity claims (e.g. involving injuries or high financial loss) to ensure compliance with strict insurance processing SLA timelines.
+- **Early Fraud Detection**: Identifies potential fraudulent claims (Fraud Score > 80) at intake using factors like reporting delays and historical claims counts, routing them directly to the Special Investigations Unit (SIU).
+- **Reduced Triaging Cycle Times**: Instantly routes standard claims directly to specialized claims Adjusters, dropping claim routing processing times from days to milliseconds.
+
+---
+
 ## 🏗️ System Architecture
 
 The pipeline consists of four machine learning models connected in a cascaded execution flow:
