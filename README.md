@@ -1,6 +1,6 @@
 # 🩸 End-to-End Diabetes Prediction MLOps Platform
 
-[![MLOps Pipeline](https://github.com/bittush8789/liberty-claims-router-mlops/actions/workflows/mlops-pipeline.yaml/badge.svg?branch=acicd)](https://github.com/bittush8789/liberty-claims-router-mlops/actions/workflows/mlops-pipeline.yaml)
+[![MLOps Pipeline](https://github.com/bittush8789/liberty-claims-router-mlops/actions/workflows/mlops-pipeline.yaml/badge.svg?branch=cicd)](https://github.com/bittush8789/liberty-claims-router-mlops/actions/workflows/mlops-pipeline.yaml)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100.0%2B-emerald.svg)](https://fastapi.tiangolo.com/)
 [![KServe](https://img.shields.io/badge/KServe-v0.11.0-blue.svg)](https://kserve.github.io/website/)
 [![ArgoCD](https://img.shields.io/badge/ArgoCD-GitOps-orange.svg)](https://argoproj.github.io/argo-cd/)
@@ -13,7 +13,7 @@ A production-grade, end-to-end MLOps platform for diagnosing diabetes risk using
 
 ```mermaid
 flowchart TD
-    A[Git Push to branch: acicd] --> B[GitHub Actions CI]
+    A[Git Push to branch: cicd] --> B[GitHub Actions CI]
     B --> C[Run Training Pipelines]
     C --> D[Push Model file to AWS S3]
     D --> E[Update k8s/inference.yaml with S3 path]
@@ -156,7 +156,7 @@ Automate manifests deployment on git pushes:
    kubectl apply -f argocd/application.yaml
    ```
 
-ArgoCD will continuously poll the branch `acicd` and deploy changes whenever `k8s/inference.yaml` is updated by GitHub Actions.
+ArgoCD will continuously poll the branch `cicd` and deploy changes whenever `k8s/inference.yaml` is updated by GitHub Actions.
 
 ---
 
