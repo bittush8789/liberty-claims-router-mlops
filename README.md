@@ -1,147 +1,177 @@
-# 🗽 Liberty Claims Router
+# 🩸 End-to-End Diabetes Prediction MLOps Platform
 
-[![Python Version](https://img.shields.io/badge/python-3.10%20%7C%203.11-blue.svg)](https://www.python.org/)
+[![MLOps Pipeline](https://github.com/bittush8789/liberty-claims-router-mlops/actions/workflows/mlops-pipeline.yaml/badge.svg?branch=acicd)](https://github.com/bittush8789/liberty-claims-router-mlops/actions/workflows/mlops-pipeline.yaml)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100.0%2B-emerald.svg)](https://fastapi.tiangolo.com/)
-[![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.2.0%2B-orange.svg)](https://scikit-learn.org/)
-[![MLflow](https://img.shields.io/badge/MLflow-2.3.0%2B-blueviolet.svg)](https://mlflow.org/)
+[![KServe](https://img.shields.io/badge/KServe-v0.11.0-blue.svg)](https://kserve.github.io/website/)
+[![ArgoCD](https://img.shields.io/badge/ArgoCD-GitOps-orange.svg)](https://argoproj.github.io/argo-cd/)
 
-An enterprise-grade, production-ready **First Notice of Loss (FNOL) Intelligent Routing System** that automates claims ingestion, classifies loss types, evaluates fraud probability, predicts priority levels, and routes claims to dedicated teams in real-time.
-
-![Liberty Claims Router Dashboard](photo/image.png)
+A production-grade, end-to-end MLOps platform for diagnosing diabetes risk using the Pima Indians Diabetes dataset. The system integrates standard training pipelines, DVC tracking, AWS S3 storage, KServe serving, ArgoCD GitOps sync, and Prometheus telemetry.
 
 ---
 
-## 🏗️ System Architecture
-
-The pipeline consists of four machine learning models connected in a cascaded execution flow:
+## 🏗️ System Architecture & GitOps Flow
 
 ```mermaid
 flowchart TD
-    A[FNOL Intake Form / API Payload] --> B[FastAPI Web Core]
-    B --> C[Cascaded Prediction Pipeline]
-    C --> D[Model 1: Claim Type Classifier<br/><i>TF-IDF + Logistic Regression</i>]
-    D --> E[Model 2: Priority Predictor<br/><i>Random Forest Classifier</i>]
-    D --> F[Model 3: Fraud Regressor<br/><i>Random Forest Regressor</i>]
-    E & F --> G[Model 4: Routing Classifier<br/><i>Random Forest + Rules Engine</i>]
-    G --> H[Team Assignment]
-    H --> I[(PostgreSQL Database)]
+    A[Git Push to branch: acicd] --> B[GitHub Actions CI]
+    B --> C[Run Training Pipelines]
+    C --> D[Push Model file to AWS S3]
+    D --> E[Update k8s/inference.yaml with S3 path]
+    E --> F[CI Commits back to Branch]
+    F --> G[ArgoCD Polls Repository]
+    G --> H[Sync K8s Cluster state]
+    H --> I[KServe InferenceService Reloads Model]
+    I --> J[Prometheus Metrics Collection]
 ```
 
 ---
 
-## 🌟 Key Features
-
-*   **Cascaded ML Models**: 
-    *   **Model 1 (Claim Type)**: Maps loss descriptions to *Auto, Property, General Liability, or Workers Compensation*.
-    *   **Model 2 (Priority)**: Predicts priority (*Low, Medium, High, Critical*) from claim amount and injuries.
-    *   **Model 3 (Fraud Score)**: Evaluates fraud risk (0-100 score).
-    *   **Model 4 (Routing)**: Recommends dispatcher team based on predictions and business overrides.
-*   **Web Dashboard**: Premium interactive visual cockpit containing charts, KPIs, and claim records registry.
-*   **Database Auditing**: Complete schemas for both claim metadata storage and prediction logs for compliance.
-*   **CI/CD Pipeline**: GitHub Action for code linting, pipeline verification, and docker health checks.
-
----
-
-## 📁 Project Directory Structure
+## 📁 Project Layout
 
 ```
-insurance-fnol-routing/
-├── data/                    # Generated training datasets (DVC-tracked)
-├── models/                  # Persisted ML Model binaries (.joblib)
-├── src/                     # Machine Learning source files
-│   ├── ingestion.py         # Mock data simulation generator
-│   ├── preprocessing.py     # Text cleaning and target mappings
-│   ├── feature_engineering.py# Normalizers & text vectorizers
-│   ├── train_claim_type.py  # Model 1 training script
-│   ├── train_priority.py    # Model 2 training script
-│   ├── train_fraud.py       # Model 3 training script
-│   ├── train_routing.py     # Model 4 training script
-│   └── predict.py           # inference logic wrapper
-├── api/
-│   └── app.py               # FastAPI backend routing and database models
+end-to-end-diabetes-prediction-mlops/
+├── .github/workflows/
+│   └── mlops-pipeline.yaml  # GitHub Actions pipeline definitions
+├── argocd/
+│   └── application.yaml     # ArgoCD GitOps synchronizations
+├── k8s/
+│   ├── serviceaccount.yaml  # K8s Namespaces, Secrets and SAs
+│   └── inference.yaml       # KServe InferenceService definition
+├── src/
+│   ├── components/          # Modular pipeline stages
+│   │   ├── data_ingestion.py
+│   │   ├── data_validation.py
+│   │   ├── data_transformation.py
+│   │   ├── model_trainer.py
+│   │   └── model_evaluation.py
+│   ├── pipeline/
+│   │   ├── training_pipeline.py
+│   │   └── prediction_pipeline.py
+│   ├── logger.py
+│   ├── exception.py
+│   └── utils.py
 ├── frontend/
-│   └── index.html           # Dashboard UI (Tailwind CSS, Chart.js)
-├── tests/
-│   └── test_api.py          # Pytest backend test suite
-├── Dockerfile               # Container build configuration
-├── docker-compose.yml       # PostgreSQL database & web app compose services
-└── requirements.txt         # Package dependencies
+│   ├── index.html           # Diagnostic client UI form
+│   ├── about.html           # Performance stats dashboards
+│   ├── style.css
+│   └── script.js
+├── app.py                   # FastAPI prediction server
+├── train.py                 # Training script runner
+├── dvc.yaml                 # DVC pipeline commands
+├── params.yaml              # Hyperparameters configurations
+├── Dockerfile
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
-## 🚀 Installation & Local Run
+## 🛠️ Step-by-Step MLOps Setup Guide
 
-### Prerequisites
-- Python 3.10+
-- Pip package manager
+Follow these steps to configure the end-to-end MLOps pipeline from scratch:
 
-### 1. Local Python Setup
-
-```bash
-# Clone the repository and navigate inside
-cd insurance-fnol-routing
-
-# Install package dependencies
-pip install -r requirements.txt
-```
-
-### 2. Run Data Ingestion & Model Training
-
-```bash
-# Generate synthetic dataset
-python src/ingestion.py
-
-# Train models sequentially (registers to MLflow)
-python src/train_claim_type.py
-python src/train_priority.py
-python src/train_fraud.py
-python src/train_routing.py
-```
-
-### 3. Launch Web API and UI
-
-```bash
-# Start backend server
-uvicorn api.app:app --port 8000
-```
-Open **[http://localhost:8000](http://localhost:8000)** in your browser to view the interactive dashboard dashboard.
+### Step 1: GitHub Repository Secrets Configuration
+To enable the GitHub Actions CI/CD to communicate with AWS S3, add the following secrets under **Repository Settings -> Secrets and Variables -> Actions -> Repository Secrets**:
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
 
 ---
 
-## 🐳 Containerized Stack (Docker Compose)
-
-Launch the production-ready PostgreSQL and FastAPI application stack instantly with Docker:
-
-```bash
-docker-compose up --build
-```
-
-The database container will spin up and initialize schemas automatically.
-
----
-
-## 📊 MLOps Integration Details
-
-### MLflow Experiment Tracking
-All model runs automatically log metrics (Accuracy, MAE, R2-score) and log model files to the local MLflow server. To view the MLflow UI:
-```bash
-mlflow ui --port 5000
-```
-Navigate to `http://localhost:5000` to inspect experiment metrics.
-
-### DVC Dataset Versioning
-Raw dataset ingestion is tracked using DVC:
-```bash
-# Track raw dataset
-dvc add data/raw_claims.csv
-```
+### Step 2: DVC Setup & Model Tracking
+Initialize DVC to track intermediate datasets and models:
+1. **Initialize DVC**:
+   ```bash
+   dvc init
+   ```
+2. **Add AWS S3 bucket as remote storage**:
+   ```bash
+   dvc remote add -d myremote s3://diabetes-model-bucket/models
+   ```
+3. **Track model artifact**:
+   ```bash
+   dvc add models/diabetes_model.pkl
+   ```
+4. **Push data tracker files**:
+   ```bash
+   dvc push
+   ```
 
 ---
 
-## 🧪 Testing Suite
-
-Execute the tests package via pytest:
+### Step 3: Run Model Pipeline Locally
+Before deploying, trigger model ingestion, data validation schema reports, and train standard models (Logistic Regression, Random Forest, XGBoost):
 ```bash
-pytest tests/
+# Run full training orchestration
+python train.py
 ```
+This writes:
+- `artifacts/preprocessor.pkl`
+- `models/diabetes_model.pkl`
+- `validation_report.yaml` (schema report)
+- `metrics.json` (performance scores)
+
+---
+
+### Step 4: Run Application Server Locally
+Start the FastAPI server:
+```bash
+uvicorn app:app --port 8000
+```
+- Open **[http://localhost:8000](http://localhost:8000)** to view the Diagnostic UI.
+- Health Check: `GET http://localhost:8000/health`
+- Prometheus Exporter Telemetry: `GET http://localhost:8000/metrics`
+
+---
+
+### Step 5: Kubernetes & KServe Deployment
+Deploy the model configurations to your Kubernetes cluster:
+1. **Create KIND Cluster (Optional local environment)**:
+   ```bash
+   kind create cluster --name diabetes-cluster
+   ```
+2. **Install KServe Serving core**:
+   ```bash
+   kubectl apply -f https://github.com/kserve/kserve/releases/download/v0.11.0/kserve.yaml
+   ```
+3. **Apply service accounts, AWS credentials secrets, and namespace**:
+   ```bash
+   kubectl apply -f k8s/serviceaccount.yaml
+   ```
+4. **Deploy KServe predictor**:
+   ```bash
+   kubectl apply -f k8s/inference.yaml
+   ```
+
+---
+
+### Step 6: ArgoCD GitOps Deployment
+Automate manifests deployment on git pushes:
+1. **Deploy ArgoCD core**:
+   ```bash
+   kubectl create namespace argocd
+   kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+   ```
+2. **Deploy GitOps application tracking**:
+   ```bash
+   kubectl apply -f argocd/application.yaml
+   ```
+
+ArgoCD will continuously poll the branch `acicd` and deploy changes whenever `k8s/inference.yaml` is updated by GitHub Actions.
+
+---
+
+## 📈 Monitoring Telemetry (Prometheus & Grafana)
+
+The `/metrics` endpoint exports Prometheus metric primitives:
+- `diabetes_predictions_total` (counter)
+- `diabetes_diabetic_total` / `diabetes_non_diabetic_total` (counters)
+- `diabetes_prediction_latency_seconds_average` (gauge)
+
+Add target job configuration to your `prometheus.yml`:
+```yaml
+scrape_configs:
+  - job_name: 'diabetes-predictor-service'
+    static_configs:
+      - targets: ['localhost:8000']
+```
+Import the metrics registry configurations to Grafana to visualize diagnostics charts.
