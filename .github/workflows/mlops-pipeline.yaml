@@ -1,55 +1,59 @@
-name: MLOps Training & Deployment Pipeline
+name: MLOps Pipeline
 
 on:
   push:
-    branches: [ acicd ]
-  pull_request:
-    branches: [ acicd ]
+    branches: [acicd]
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  S3_BUCKET: diabetes-model-bucket
 
 jobs:
   train-and-deploy:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write  # Required to push commits
+    
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
       with:
-        fetch-depth: 0
-
+        token: ${{ secrets.GITHUB_TOKEN }}  # Use built-in token
+    
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.10
-        cache: 'pip'
-
+        python-version: '3.11'
+    
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
         pip install -r requirements.txt
-
-    - name: Run Pipeline (Data Ingestion, Validation, scaling and training)
+    
+    - name: Train model
+      run: python train.py
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    
+    - name: Push model to S3 directly
       run: |
-        python train.py
-
-    - name: DVC Track & Push
+        aws s3 cp models/diabetes_model.pkl s3://${{ env.S3_BUCKET }}/models/diabetes_model.pkl
+        echo "Model pushed to S3 is success"
+    
+    - name: Update inference.yaml with S3 model path
       run: |
-        # Initialize mock DVC configuration for CI
-        dvc init --no-scm -f
-        dvc remote add -d myremote s3://diabetes-model-bucket/models
-        # Track models
-        dvc add models/diabetes_model.pkl
-        # We would run 'dvc push' with S3 credentials in production
-        echo "DVC tracking finalized"
-
-    - name: Update KServe configurations & Commit
+        MODEL_URI="s3://${{ env.S3_BUCKET }}/models/"
+        sed -i "s|storageUri: .*|storageUri: $MODEL_URI|g" k8s/inference.yaml
+    
+    - name: Commit updated inference.yaml
       run: |
-        git config --global user.name "GitHub Actions CI"
-        git config --global user.email "ci@github-actions.local"
-        
-        # Modify dummy comment or tag in k8s/inference.yaml to trigger GitOps sync
-        echo "# Last update: $(date)" >> k8s/inference.yaml
-        
-        git add k8s/inference.yaml models/diabetes_model.pkl.dvc metrics.json validation_report.yaml
-        git commit -m "Auto-update deployed model artifacts [skip ci]" || echo "No changes to commit"
-        
-        # Git push back to remote (using authentication tokens in production)
-        # git push origin acicd
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add k8s/inference.yaml
+        git commit -m "Update model S3 path [skip ci]" || echo "No changes"
+        git push || echo "No changes to push"
